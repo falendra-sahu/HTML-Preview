@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Preview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.css">
+    <style>
+        :root {
+            --light-bg: #f5f7fa;
+            --light-text: #333;
+            --dark-bg: #1c1c1c;
+            --dark-text: #f1f1f1;
+            --primary-color: #ff6f61;
+            --primary-color-hover: #ff3b30;
+            --primary-color-active: #e60000;
+            --border-radius: 12px;
+            --btn-padding: 12px 25px;
+            --transition: 0.3s ease;
+            --box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            --input-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        body.light-theme {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        body.dark-theme {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .CodeMirror {
+            width: 100%;
+            max-width: 900px;
+            height: 350px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--input-shadow);
+            margin-bottom: 30px;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        .CodeMirror pre {
+            margin: 0; /* Ensure no margin inside CodeMirror */
+        }
+
+        .CodeMirror-light {
+            background-color: #fff;
+            color: var(--light-text);
+        }
+
+        .CodeMirror-dark {
+            background-color: #2e2e2e;
+            color: var(--dark-text);
+        }
+
+        .buttons, .theme-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: var(--btn-padding);
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        button:hover {
+            background-color: var(--primary-color-hover);
+            transform: translateY(-3px);
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            background-color: var(--primary-color-active);
+            transform: translateY(1px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+            color: #666;
+        }
+
+        .theme-toggle button {
+            background-color: #6c757d;
+        }
+
+        .theme-toggle button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <h1>HTML Preview 🕸️</h1>
+    <div id="codeEditor" class="CodeMirror CodeMirror-dark"></div>
+    <div class="buttons">
+        <button onclick="pasteHTML()">Paste</button>
+        <button onclick="previewHTML()">Preview</button>
+        <button onclick="clearHTML()">Clear</button>
+    </div>
+    <div class="theme-toggle">
+        <button onclick="toggleTheme()">Toggle Theme</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.js"></script>
+    <script>
+        const editor = CodeMirror(document.getElementById('codeEditor'), {
+            mode: 'htmlmixed',
+            theme: 'dracula',
+            lineNumbers: true,
+            viewportMargin: Infinity
+        });
+
+        function previewHTML() {
+            const htmlCode = editor.getValue();
+            const newWindow = window.open();
+            newWindow.document.open();
+            newWindow.document.write(htmlCode);
+            newWindow.document.close();
+        }
+
+        function clearHTML() {
+            editor.setValue('');
+        }
+
+        function pasteHTML() {
+            navigator.clipboard.readText().then(text => {
+                editor.replaceSelection(text);
+            }).catch(err => {
+                alert('Failed to read clipboard contents: ' + err);
+            });
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const editorElement = document.querySelector('.CodeMirror');
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                editor.setOption('theme', 'dracula');
+                editorElement.classList.remove('CodeMirror-light');
+                editorElement.classList.add('CodeMirror-dark');
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                editor.setOption('theme', 'default');
+                editorElement.classList.remove('CodeMirror-dark');
+                editorElement.classList.add('CodeMirror-light');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -30,6 +30,7 @@
             flex-direction: column;
             align-items: center;
             transition: background-color var(--transition), color var(--transition);
+            position: relative; /* To position the theme button */
         }
 
         body.light-theme {
@@ -46,6 +47,8 @@
             margin-bottom: 30px;
             font-size: 2.5rem;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer; /* Make it look clickable */
         }
 
         .CodeMirror {
@@ -72,7 +75,7 @@
             color: var(--dark-text);
         }
 
-        .buttons, .theme-toggle {
+        .buttons {
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
@@ -82,7 +85,6 @@
             padding: var(--btn-padding);
             border: none;
             border-radius: var(--border-radius);
-            background-color: var(--primary-color);
             color: white;
             cursor: pointer;
             font-size: 16px;
@@ -91,43 +93,55 @@
             box-shadow: var(--box-shadow);
         }
 
-        button:hover {
+        /* Light Theme Button Styles */
+        body.light-theme button {
+            background-color: var(--primary-color);
+        }
+
+        body.light-theme button:hover {
             background-color: var(--primary-color-hover);
             transform: translateY(-3px);
             box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
         }
 
-        button:active {
+        body.light-theme button:active {
             background-color: var(--primary-color-active);
             transform: translateY(1px);
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Dark Theme Button Styles */
+        body.dark-theme button {
+            background-color: #333; /* Darker background color for buttons */
+            color: #f1f1f1; /* Light text color for contrast */
+        }
+
+        body.dark-theme button:hover {
+            background-color: #444; /* Slightly lighter color for hover effect */
+            transform: translateY(-3px);
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-theme button:active {
+            background-color: #555; /* Even lighter color for active state */
+            transform: translateY(1px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         button:disabled {
-            background-color: #ddd;
+            background-color: #888; /* Gray color for disabled buttons */
             cursor: not-allowed;
-            color: #666;
-        }
-
-        .theme-toggle button {
-            background-color: #6c757d;
-        }
-
-        .theme-toggle button:hover {
-            background-color: #5a6268;
+            box-shadow: none;
         }
     </style>
 </head>
 <body class="dark-theme">
-    <h1>HTML Preview 🕸️</h1>
+    <h1 id="themeToggleHeading">HTML Preview 🕸️</h1>
     <div id="codeEditor" class="CodeMirror CodeMirror-dark"></div>
     <div class="buttons">
-        <button onclick="pasteHTML()">Paste</button>
-        <button onclick="previewHTML()">Preview</button>
-        <button onclick="clearHTML()">Clear</button>
-    </div>
-    <div class="theme-toggle">
-        <button onclick="toggleTheme()">Toggle Theme</button>
+        <button id="pasteButton" onclick="pasteHTML()">Paste</button>
+        <button id="previewButton" onclick="previewHTML()" disabled>Preview</button>
+        <button id="clearButton" onclick="clearHTML()" disabled>Clear</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
@@ -141,8 +155,15 @@
             viewportMargin: Infinity
         });
 
+        function updateButtonStates() {
+            const hasContent = editor.getValue().trim().length > 0;
+            document.getElementById('previewButton').disabled = !hasContent;
+            document.getElementById('clearButton').disabled = !hasContent;
+        }
+
         function previewHTML() {
             const htmlCode = editor.getValue();
+            if (htmlCode.trim().length === 0) return; // Do nothing if empty
             const newWindow = window.open();
             newWindow.document.open();
             newWindow.document.write(htmlCode);
@@ -151,11 +172,13 @@
 
         function clearHTML() {
             editor.setValue('');
+            updateButtonStates(); // Update button states after clearing
         }
 
         function pasteHTML() {
             navigator.clipboard.readText().then(text => {
                 editor.replaceSelection(text);
+                updateButtonStates(); // Update button states after pasting
             }).catch(err => {
                 alert('Failed to read clipboard contents: ' + err);
             });
@@ -177,7 +200,16 @@
                 editorElement.classList.remove('CodeMirror-dark');
                 editorElement.classList.add('CodeMirror-light');
             }
+            updateButtonStates(); // Update button states on theme change
         }
+
+        // Update button states on initial load
+        updateButtonStates();
+
+        document.getElementById('themeToggleHeading').addEventListener('click', toggleTheme);
+
+        // Update button states when the editor content changes
+        editor.on('change', updateButtonStates);
     </script>
 </body>
 </html>

@@ -133,6 +133,19 @@
             cursor: not-allowed;
             box-shadow: none;
         }
+
+        #copyMessage {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -141,8 +154,10 @@
     <div class="buttons">
         <button id="pasteButton" onclick="pasteHTML()">Paste</button>
         <button id="previewButton" onclick="previewHTML()" disabled>Preview</button>
+        <button id="copyButton" onclick="copyHTML()" disabled>Copy</button>
         <button id="clearButton" onclick="clearHTML()" disabled>Clear</button>
     </div>
+    <div id="copyMessage">Copied!</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
@@ -159,6 +174,7 @@
             const hasContent = editor.getValue().trim().length > 0;
             document.getElementById('previewButton').disabled = !hasContent;
             document.getElementById('clearButton').disabled = !hasContent;
+            document.getElementById('copyButton').disabled = !hasContent;
         }
 
         function previewHTML() {
@@ -173,6 +189,19 @@
         function clearHTML() {
             editor.setValue('');
             updateButtonStates(); // Update button states after clearing
+        }
+
+        function copyHTML() {
+            const htmlCode = editor.getValue();
+            navigator.clipboard.writeText(htmlCode).then(() => {
+                const copyMessage = document.getElementById('copyMessage');
+                copyMessage.style.opacity = 1;
+                setTimeout(() => {
+                    copyMessage.style.opacity = 0;
+                }, 1000);
+            }).catch(err => {
+                alert('Failed to copy text: ' + err);
+            });
         }
 
         function pasteHTML() {

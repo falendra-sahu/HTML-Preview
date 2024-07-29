@@ -54,7 +54,7 @@
         .CodeMirror {
             width: 100%;
             max-width: 900px;
-            height: 40vh; /* Responsive height */
+            height: 50vh; /* Adjusted height */
             border-radius: var(--border-radius);
             box-shadow: var(--input-shadow);
             margin-bottom: 30px;
@@ -63,8 +63,8 @@
 
         .buttons {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping for smaller screens */
-            justify-content: center; /* Center buttons */
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -79,7 +79,7 @@
             font-weight: bold;
             transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
             box-shadow: var(--box-shadow);
-            flex: 1 1 120px; /* Responsive button size */
+            flex: 1 1 120px;
         }
 
         body.light-theme button {
@@ -160,9 +160,9 @@
         }
     </style>
 </head>
-<body class="dark-theme">
+<body class="light-theme"> <!-- Set default to light theme -->
     <h1 id="themeToggleHeading">HTML Preview 🕸️</h1>
-    <div id="codeEditor" class="CodeMirror CodeMirror-dark"></div>
+    <div id="codeEditor" class="CodeMirror CodeMirror-light"></div> <!-- Updated class -->
     <div class="buttons">
         <button id="pasteButton" onclick="pasteHTML()">Paste</button>
         <button id="previewButton" onclick="previewHTML()" disabled>Preview</button>
@@ -181,7 +181,7 @@
     <script>
         const editor = CodeMirror(document.getElementById('codeEditor'), {
             mode: 'htmlmixed',
-            theme: 'dracula',
+            theme: 'default', // Set default theme to 'default'
             lineNumbers: true,
             viewportMargin: Infinity
         });

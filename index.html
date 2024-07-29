@@ -25,12 +25,12 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 40px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             transition: background-color var(--transition), color var(--transition);
-            position: relative; /* To position the theme button */
+            position: relative;
         }
 
         body.light-theme {
@@ -44,40 +44,28 @@
         }
 
         h1 {
-            margin-bottom: 30px;
-            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-size: 2rem;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-            position: relative;
-            cursor: pointer; /* Make it look clickable */
+            cursor: pointer;
+            text-align: center;
         }
 
         .CodeMirror {
             width: 100%;
             max-width: 900px;
-            height: 350px;
+            height: 40vh; /* Responsive height */
             border-radius: var(--border-radius);
             box-shadow: var(--input-shadow);
             margin-bottom: 30px;
-            overflow: hidden; /* Prevent scrollbars */
-        }
-
-        .CodeMirror pre {
-            margin: 0; /* Ensure no margin inside CodeMirror */
-        }
-
-        .CodeMirror-light {
-            background-color: #fff;
-            color: var(--light-text);
-        }
-
-        .CodeMirror-dark {
-            background-color: #2e2e2e;
-            color: var(--dark-text);
+            overflow: hidden;
         }
 
         .buttons {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            justify-content: center; /* Center buttons */
+            gap: 10px;
             margin-bottom: 20px;
         }
 
@@ -91,9 +79,9 @@
             font-weight: bold;
             transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
             box-shadow: var(--box-shadow);
+            flex: 1 1 120px; /* Responsive button size */
         }
 
-        /* Light Theme Button Styles */
         body.light-theme button {
             background-color: var(--primary-color);
         }
@@ -110,26 +98,25 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Dark Theme Button Styles */
         body.dark-theme button {
-            background-color: #333; /* Darker background color for buttons */
-            color: #f1f1f1; /* Light text color for contrast */
+            background-color: #333;
+            color: #f1f1f1;
         }
 
         body.dark-theme button:hover {
-            background-color: #444; /* Slightly lighter color for hover effect */
+            background-color: #444;
             transform: translateY(-3px);
             box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
         }
 
         body.dark-theme button:active {
-            background-color: #555; /* Even lighter color for active state */
+            background-color: #555;
             transform: translateY(1px);
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         button:disabled {
-            background-color: #888; /* Gray color for disabled buttons */
+            background-color: #888;
             cursor: not-allowed;
             box-shadow: none;
         }
@@ -146,6 +133,31 @@
             opacity: 0;
             transition: opacity var(--transition);
         }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                flex: 1 1 100%; /* Full width buttons on small screens */
+            }
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -158,6 +170,10 @@
         <button id="clearButton" onclick="clearHTML()" disabled>Clear</button>
     </div>
     <div id="copyMessage">Copied!</div>
+
+    <footer>
+        Powered by <a href="#">Falendra Sahu ❤️</a>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
@@ -179,7 +195,7 @@
 
         function previewHTML() {
             const htmlCode = editor.getValue();
-            if (htmlCode.trim().length === 0) return; // Do nothing if empty
+            if (htmlCode.trim().length === 0) return;
             const newWindow = window.open();
             newWindow.document.open();
             newWindow.document.write(htmlCode);
@@ -188,7 +204,7 @@
 
         function clearHTML() {
             editor.setValue('');
-            updateButtonStates(); // Update button states after clearing
+            updateButtonStates();
         }
 
         function copyHTML() {
@@ -207,7 +223,7 @@
         function pasteHTML() {
             navigator.clipboard.readText().then(text => {
                 editor.replaceSelection(text);
-                updateButtonStates(); // Update button states after pasting
+                updateButtonStates();
             }).catch(err => {
                 alert('Failed to read clipboard contents: ' + err);
             });
@@ -229,15 +245,12 @@
                 editorElement.classList.remove('CodeMirror-dark');
                 editorElement.classList.add('CodeMirror-light');
             }
-            updateButtonStates(); // Update button states on theme change
+            updateButtonStates();
         }
 
-        // Update button states on initial load
         updateButtonStates();
 
         document.getElementById('themeToggleHeading').addEventListener('click', toggleTheme);
-
-        // Update button states when the editor content changes
         editor.on('change', updateButtonStates);
     </script>
 </body>

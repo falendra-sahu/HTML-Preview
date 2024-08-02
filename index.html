@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Preview</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!-- Font Awesome CDN -->
     <style>
+        /* Your existing CSS styles */
         :root {
             --light-bg: #f5f7fa;
             --light-text: #333;
@@ -81,22 +84,36 @@
             transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
             box-shadow: var(--box-shadow);
             flex: 1 1 120px;
+            display: flex;
+            align-items: center; /* Center the icon vertically */
+            justify-content: center; /* Center the icon horizontally */
+            gap: 8px; /* Space between icon and text */
         }
 
+        /* Button colors for different actions */
         body.light-theme button {
             background-color: var(--primary-color);
         }
 
-        body.light-theme button:hover {
-            background-color: var(--primary-color-hover);
-            transform: translateY(-3px);
-            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+        body.light-theme #pasteButton {
+            background-color: #28a745; /* Green for paste */
         }
 
-        body.light-theme button:active {
-            background-color: var(--primary-color-active);
-            transform: translateY(1px);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        body.light-theme #previewButton {
+            background-color: #007bff; /* Blue for preview */
+        }
+
+        body.light-theme #copyButton {
+            background-color: #ffc107; /* Yellow for copy */
+        }
+
+        body.light-theme #clearButton {
+            background-color: #dc3545; /* Red for clear */
+        }
+
+        body.light-theme button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
         }
 
         body.dark-theme button {
@@ -104,16 +121,26 @@
             color: #f1f1f1;
         }
 
-        body.dark-theme button:hover {
-            background-color: #444;
-            transform: translateY(-3px);
-            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
+        body.dark-theme #pasteButton {
+            background-color: #1c7430; /* Dark green for paste */
         }
 
-        body.dark-theme button:active {
-            background-color: #555;
-            transform: translateY(1px);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        body.dark-theme #previewButton {
+            background-color: #0056b3; /* Dark blue for preview */
+        }
+
+        body.dark-theme #copyButton {
+            background-color: #806c00; /* Dark yellow for copy */
+        }
+
+        body.dark-theme #clearButton {
+            background-color: #a60000; /* Dark red for clear */
+        }
+
+        /* Common hover effects for dark theme buttons */
+        body.dark-theme button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
         }
 
         button:disabled {
@@ -141,11 +168,13 @@
             color: #666;
             text-align: center;
         }
+
         footer a {
             color: #007bff;
             text-decoration: none;
             font-weight: bold;
         }
+
         footer a:hover {
             text-decoration: underline;
         }
@@ -161,14 +190,15 @@
         }
     </style>
 </head>
+
 <body class="light-theme"> <!-- Set default to light theme -->
     <h1 id="themeToggleHeading">HTML Preview 🕸️</h1>
     <div id="codeEditor" class="CodeMirror CodeMirror-light"></div> <!-- Updated class -->
     <div class="buttons">
-        <button id="pasteButton" onclick="pasteHTML()">Paste</button>
-        <button id="previewButton" onclick="previewHTML()" disabled>Preview</button>
-        <button id="copyButton" onclick="copyHTML()" disabled>Copy</button>
-        <button id="clearButton" onclick="clearHTML()" disabled>Clear</button>
+        <button id="pasteButton" onclick="pasteHTML()"><i class="fas fa-paste"></i> Paste</button>
+        <button id="previewButton" onclick="previewHTML()" disabled><i class="fas fa-eye"></i> Preview</button>
+        <button id="copyButton" onclick="copyHTML()" disabled><i class="fas fa-copy"></i> Copy</button>
+        <button id="clearButton" onclick="clearHTML()" disabled><i class="fas fa-trash"></i> Clear</button>
     </div>
     <div id="copyMessage">Copied!</div>
 
@@ -255,4 +285,5 @@
         editor.on('change', updateButtonStates);
     </script>
 </body>
+
 </html>

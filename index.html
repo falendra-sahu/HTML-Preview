@@ -7,7 +7,7 @@
     <title>HTML Preview</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
             --light-bg: #f5f7fa;
@@ -30,7 +30,7 @@
             flex-direction: column;
             align-items: center;
             transition: background-color var(--transition), color var(--transition);
-            overflow: hidden; 
+            overflow: hidden;
         }
 
         body.light-theme {
@@ -49,12 +49,19 @@
             font-family: 'Arial', sans-serif; /* Change this to your preferred font */
             text-align: center;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h1 i {
+            margin-left: 10px; /* Add space between text and icon */
         }
 
         .CodeMirror {
             width: 100%;
             max-width: 900px;
-            height: 50vh; 
+            height: 50vh;
             border-radius: var(--border-radius);
             box-shadow: var(--input-shadow);
             margin-bottom: 30px;
@@ -86,19 +93,19 @@
         }
 
         body.light-theme #pasteButton {
-            background-color: #28a745; 
+            background-color: #28a745;
         }
 
         body.light-theme #previewButton {
-            background-color: #007bff; 
+            background-color: #007bff;
         }
 
         body.light-theme #copyButton {
-            background-color: #ffc107; 
+            background-color: #ffc107;
         }
 
         body.light-theme #clearButton {
-            background-color: #dc3545; 
+            background-color: #dc3545;
         }
 
         body.dark-theme button {
@@ -107,19 +114,19 @@
         }
 
         body.dark-theme #pasteButton {
-            background-color: #1c7430; 
+            background-color: #1c7430;
         }
 
         body.dark-theme #previewButton {
-            background-color: #0056b3; 
+            background-color: #0056b3;
         }
 
         body.dark-theme #copyButton {
-            background-color: #806c00; 
+            background-color: #806c00;
         }
 
         body.dark-theme #clearButton {
-            background-color: #a60000; 
+            background-color: #a60000;
         }
 
         button:hover {
@@ -169,19 +176,19 @@
             }
 
             .buttons {
-                flex-direction: row; 
-                gap: 5px; 
+                flex-direction: row;
+                gap: 5px;
             }
 
             button {
-                flex: 1; 
+                flex: 1;
             }
         }
     </style>
 </head>
 
 <body class="light-theme">
-    <h1 id="themeToggleHeading">HTML Preview 🕸️</h1>
+    <h1 id="themeToggleHeading">HTML Preview <i class="fa-duotone fa-solid fa-code"></i></h1>
     <div id="codeEditor" class="CodeMirror CodeMirror-light"></div>
     <div class="buttons">
         <button id="pasteButton" onclick="pasteHTML()"><i class="fas fa-paste"></i> Paste</button>

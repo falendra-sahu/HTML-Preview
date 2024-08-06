@@ -108,6 +108,14 @@
             background-color: #dc3545;
         }
 
+        body.light-theme #undoButton {
+            background-color: #17a2b8;
+        }
+
+        body.light-theme #redoButton {
+            background-color: #6f42c1;
+        }
+
         body.dark-theme button {
             background-color: #333;
             color: #f1f1f1;
@@ -127,6 +135,14 @@
 
         body.dark-theme #clearButton {
             background-color: #a60000;
+        }
+
+        body.dark-theme #undoButton {
+            background-color: #138496;
+        }
+
+        body.dark-theme #redoButton {
+            background-color: #5a28a6;
         }
 
         button:hover {
@@ -192,6 +208,8 @@
     <div id="codeEditor" class="CodeMirror CodeMirror-light"></div>
     <div class="buttons">
         <button id="pasteButton" onclick="pasteHTML()"><i class="fas fa-paste"></i> Paste</button>
+        <button id="undoButton" onclick="undoAction()" disabled><i class="fas fa-undo"></i> Undo</button>
+        <button id="redoButton" onclick="redoAction()" disabled><i class="fas fa-redo"></i> Redo</button>
         <button id="previewButton" onclick="previewHTML()" disabled><i class="fas fa-eye"></i> Preview</button>
         <button id="copyButton" onclick="copyHTML()" disabled><i class="fas fa-copy"></i> Copy</button>
         <button id="clearButton" onclick="clearHTML()" disabled><i class="fas fa-trash"></i> Clear</button>
@@ -204,20 +222,27 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/matchbrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.js"></script>
     <script>
         const editor = CodeMirror(document.getElementById('codeEditor'), {
             mode: 'htmlmixed',
             theme: 'default',
             lineNumbers: true,
-            viewportMargin: Infinity
+            viewportMargin: Infinity,
+            autoCloseBrackets: true,
+            matchBrackets: true
         });
 
         function updateButtonStates() {
             const hasContent = editor.getValue().trim().length > 0;
+            const history = editor.historySize();
             document.getElementById('previewButton').disabled = !hasContent;
             document.getElementById('clearButton').disabled = !hasContent;
             document.getElementById('copyButton').disabled = !hasContent;
+            document.getElementById('undoButton').disabled = history.undo === 0;
+            document.getElementById('redoButton').disabled = history.redo === 0;
         }
 
         function previewHTML() {
@@ -249,11 +274,27 @@
 
         function pasteHTML() {
             navigator.clipboard.readText().then(text => {
-                editor.replaceSelection(text);
+                const extractedCode = extractCode(text);
+                editor.setValue(extractedCode);
                 updateButtonStates();
             }).catch(err => {
                 alert('Failed to read clipboard contents: ' + err);
             });
+        }
+
+        function extractCode(input) {
+            const codePattern = /<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>|<!DOCTYPE html[\s\S]*<\/html>/gi;
+            return input.match(codePattern)?.join('\n') || 'No valid HTML/CSS/JS code found.';
+        }
+
+        function undoAction() {
+            editor.undo();
+            updateButtonStates();
+        }
+
+        function redoAction() {
+            editor.redo();
+            updateButtonStates();
         }
 
         function toggleTheme() {

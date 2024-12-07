@@ -4,33 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Preview</title>
+    <title>Code Editor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --light-bg: #f5f7fa;
-            --light-text: #333;
-            --dark-bg: #1c1c1c;
-            --dark-text: #f1f1f1;
-            --primary-color: #ff6f61;
-            --border-radius: 12px;
-            --btn-padding: 12px 25px;
+            --light-bg: #f8f9fa;
+            --light-text: #212529;
+            --dark-bg: #212529;
+            --dark-text: #f8f9fa;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --border-radius: 8px;
             --transition: 0.3s ease;
-            --box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            --input-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            --box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 0px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             transition: background-color var(--transition), color var(--transition);
-            overflow: hidden;
         }
 
         body.light-theme {
@@ -43,125 +46,106 @@
             color: var(--dark-text);
         }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 2rem;
-            font-family: 'Arial', sans-serif; /* Change this to your preferred font */
-            text-align: center;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            position: relative;
+            margin-top: 20px;
         }
 
-        h1 i {
-            margin-left: 10px; /* Add space between text and icon */
+        h1 {
+            margin-bottom: 60px;
+            font-size: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+
+        .editor-container {
+            position: relative;
+            margin-top: 20px;
         }
 
         .CodeMirror {
-            width: 100%;
-            max-width: 900px;
-            height: 50vh;
+            height: 60vh;
             border-radius: var(--border-radius);
-            box-shadow: var(--input-shadow);
-            margin-bottom: 30px;
-        }
-
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: var(--btn-padding);
-            border: none;
-            border-radius: var(--border-radius);
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
             box-shadow: var(--box-shadow);
-            flex: 1 1 120px;
         }
 
-        body.light-theme button {
-            background-color: var(--primary-color);
+        .editor-buttons {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
         }
 
-        body.light-theme #pasteButton {
-            background-color: #28a745;
+        .editor-button {
+            background-color: 
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
         }
 
-        body.light-theme #previewButton {
-            background-color: #007bff;
+        .editor-button:hover {
+            background-color: var(--secondary-color);
         }
 
-        body.light-theme #copyButton {
-            background-color: #ffc107;
+        .editor-button:active {
+            transform: scale(0.9);
         }
 
-        body.light-theme #clearButton {
-            background-color: #dc3545;
+        .editor-button i {
+            font-size: 0.9rem;
         }
 
-        body.light-theme #undoButton {
-            background-color: #17a2b8;
+        .download-dropdown {
+            position: relative;
         }
 
-        body.light-theme #redoButton {
-            background-color: #6f42c1;
+        .download-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 5px 0;
         }
 
-        body.dark-theme button {
-            background-color: #333;
-            color: #f1f1f1;
+        .download-options button {
+            display: block;
+            width: 100%;
+            padding: 5px 10px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
-        body.dark-theme #pasteButton {
-            background-color: #1c7430;
+        .download-options button:hover {
+            background-color: #f1f1f1;
         }
 
-        body.dark-theme #previewButton {
-            background-color: #0056b3;
-        }
-
-        body.dark-theme #copyButton {
-            background-color: #806c00;
-        }
-
-        body.dark-theme #clearButton {
-            background-color: #a60000;
-        }
-
-        body.dark-theme #undoButton {
-            background-color: #138496;
-        }
-
-        body.dark-theme #redoButton {
-            background-color: #5a28a6;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        button:disabled {
-            background-color: #888;
-            cursor: not-allowed;
-            box-shadow: none;
+        .show {
+            display: block;
         }
 
         #copyMessage {
             position: fixed;
-            top: 35%;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background-image: linear-gradient(-225deg, #B6CEE8 0%, #F578DC 100%);
+            transform: translateX(-50%);
+            background-color: var(--success-color);
             color: white;
             padding: 10px 20px;
             border-radius: var(--border-radius);
@@ -171,79 +155,85 @@
         }
 
         footer {
-            margin-top: 1px;
-            font-size: 14px;
-            color: #666;
+            margin-top: 20px;
+            padding: 20px 0;
             text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
         }
 
         footer a {
-            color: #007bff;
+            color: var(--primary-color);
             text-decoration: none;
-            font-weight: bold;
         }
 
         footer a:hover {
             text-decoration: underline;
         }
 
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5rem;
+        @media (max-width: 768px) {
+            .editor-buttons {
+                top: -35px;
             }
 
-            .buttons {
-                flex-direction: row;
-                gap: 5px;
+            .editor-button {
+                width: 25px;
+                height: 25px;
             }
 
-            button {
-                flex: 1;
+            .editor-button i {
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 
 <body class="light-theme">
-    <h1 id="themeToggleHeading">HTML Preview <i class="fa-duotone fa-solid fa-code"></i></h1>
-    <div id="codeEditor" class="CodeMirror CodeMirror-light"></div>
-    <div class="buttons">
-        <button id="pasteButton" onclick="pasteHTML()"><i class="fas fa-paste"></i> Paste</button>
-        <button id="undoButton" onclick="undoAction()" disabled><i class="fas fa-undo"></i> Undo</button>
-        <button id="redoButton" onclick="redoAction()" disabled><i class="fas fa-redo"></i> Redo</button>
-        <button id="previewButton" onclick="previewHTML()" disabled><i class="fas fa-eye"></i> Preview</button>
-        <button id="copyButton" onclick="copyHTML()" disabled><i class="fas fa-copy"></i> Copy</button>
-        <button id="clearButton" onclick="clearHTML()" disabled><i class="fas fa-trash"></i> Clear</button>
+    <div class="container">
+        <h1 id="themeToggleHeading">Code Editor <i class="fas fa-code"></i></h1>
+        <div class="editor-container">
+            <div class="editor-buttons">
+                <button class="editor-button" id="pasteButton" onclick="pasteHTML()" title="Paste"><i class="fas fa-paste"></i></button>
+                <button class="editor-button" id="previewButton" onclick="previewHTML()" title="Preview" disabled><i class="fas fa-eye"></i></button>
+                <button class="editor-button" id="copyButton" onclick="copyHTML()" title="Copy" disabled><i class="fas fa-copy"></i></button>
+                <button class="editor-button" id="clearButton" onclick="clearHTML()" title="Clear" disabled><i class="fas fa-trash"></i></button>
+                <div class="download-dropdown">
+                    <button class="editor-button download-button" onclick="toggleDownloadOptions(event)" title="Download"><i class="fas fa-download"></i></button>
+                    <div id="downloadOptions" class="download-options">
+                        <button onclick="downloadCode('html')">Download HTML</button>
+                        <button onclick="downloadCode('txt')">Download TXT</button>
+                    </div>
+                </div>
+            </div>
+            <div id="codeEditor"></div>
+        </div>
+        <div id="copyMessage">Copied to clipboard!</div>
     </div>
-    <div id="copyMessage">Copied!</div>
 
     <footer>
-        Powered by <a href="#">Falendra Sahu ❤️</a>
+        Created with <i class="fas fa-heart" style="color: #dc3545;"></i> by <a href="#">Falendra Sahu</a>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/closebrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.js"></script>
     <script>
         const editor = CodeMirror(document.getElementById('codeEditor'), {
             mode: 'htmlmixed',
             theme: 'default',
             lineNumbers: true,
-            viewportMargin: Infinity,
             autoCloseBrackets: true,
-            matchBrackets: true
+            matchBrackets: true,
+            lineWrapping: true,
+            viewportMargin: Infinity
         });
 
         function updateButtonStates() {
             const hasContent = editor.getValue().trim().length > 0;
-            const history = editor.historySize();
             document.getElementById('previewButton').disabled = !hasContent;
             document.getElementById('clearButton').disabled = !hasContent;
             document.getElementById('copyButton').disabled = !hasContent;
-            document.getElementById('undoButton').disabled = history.undo === 0;
-            document.getElementById('redoButton').disabled = history.redo === 0;
         }
 
         function previewHTML() {
@@ -263,39 +253,38 @@
         function copyHTML() {
             const htmlCode = editor.getValue();
             navigator.clipboard.writeText(htmlCode).then(() => {
-                const copyMessage = document.getElementById('copyMessage');
-                copyMessage.style.opacity = 1;
-                setTimeout(() => {
-                    copyMessage.style.opacity = 0;
-                }, 1000);
+                showCopyMessage();
             }).catch(err => {
                 alert('Failed to copy text: ' + err);
             });
         }
 
+        function showCopyMessage() {
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.style.opacity = 1;
+            setTimeout(() => {
+                copyMessage.style.opacity = 0;
+            }, 2000);
+        }
+
         function pasteHTML() {
             navigator.clipboard.readText().then(text => {
-                const extractedCode = extractCode(text);
-                editor.setValue(extractedCode);
+                editor.setValue(text);
                 updateButtonStates();
             }).catch(err => {
                 alert('Failed to read clipboard contents: ' + err);
             });
         }
 
-        function extractCode(input) {
-            const codePattern = /<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>|<!DOCTYPE html[\s\S]*<\/html>/gi;
-            return input.match(codePattern)?.join('\n') || 'No valid HTML/CSS/JS code found.';
-        }
-
-        function undoAction() {
-            editor.undo();
-            updateButtonStates();
-        }
-
-        function redoAction() {
-            editor.redo();
-            updateButtonStates();
+        function downloadCode(fileType) {
+            const content = editor.getValue();
+            const blob = new Blob([content], { type: fileType === 'html' ? 'text/html' : 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `code.${fileType}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function toggleTheme() {
@@ -305,22 +294,33 @@
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
                 editor.setOption('theme', 'dracula');
-                editorElement.classList.remove('CodeMirror-light');
-                editorElement.classList.add('CodeMirror-dark');
             } else {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
                 editor.setOption('theme', 'default');
-                editorElement.classList.remove('CodeMirror-dark');
-                editorElement.classList.add('CodeMirror-light');
             }
-            updateButtonStates();
         }
 
-        updateButtonStates();
+        function toggleDownloadOptions(event) {
+            event.stopPropagation();
+            document.getElementById("downloadOptions").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.download-button')) {
+                var dropdowns = document.getElementsByClassName("download-options");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
 
         document.getElementById('themeToggleHeading').addEventListener('click', toggleTheme);
         editor.on('change', updateButtonStates);
+        updateButtonStates();
     </script>
 </body>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<html><head><base href="HTML">
 <html lang="en">
 
 <head>
@@ -6,160 +6,219 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Editor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/material-ocean.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --light-bg: #f8f9fa;
-            --light-text: #212529;
-            --dark-bg: #212529;
-            --dark-text: #f8f9fa;
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-            --border-radius: 8px;
-            --transition: 0.3s ease;
-            --box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --success: #22c55e;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 0px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background-color var(--transition), color var(--transition);
+            background: var(--bg-light);
+            color: var(--text-dark);
+            transition: var(--transition);
+            padding-top: 1px;
         }
 
-        body.light-theme {
-            background-color: var(--light-bg);
-            color: var(--light-text);
-        }
-
-        body.dark-theme {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
+        .dark-theme {
+            background: var(--bg-dark);
+            color: var(--text-light);
         }
 
         .container {
-            width: 100%;
-            max-width: 1000px;
-            position: relative;
-            margin-top: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
         }
 
-        h1 {
-            margin-bottom: 60px;
-            font-size: 2.0rem;
-            text-align: center;
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             cursor: pointer;
-            transition: color var(--transition);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--primary-color);
         }
 
         .editor-container {
             position: relative;
-            margin-top: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: white;
+            box-shadow: var(--box-shadow);
+            margin-top: 0.5rem;
+        }
+
+        .dark-theme .editor-container {
+            background: #1a1a1a;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dark-theme .toolbar {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            color: var(--text-dark);
+        }
+
+        .dark-theme .btn {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn i {
+            font-size: 1rem;
         }
 
         .CodeMirror {
-            height: 60vh;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            height: 65vh !important;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            padding: 1rem;
         }
 
-        .editor-buttons {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            display: flex;
-            gap: 5px;
-            z-index: 10;
+        .dark-theme .CodeMirror {
+            background: #1a1a1a;
+            color: #f1f5f9;
         }
 
-        .editor-button {
-            background-color: 
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.3s;
+        .dark-theme .CodeMirror-gutters {
+            background: #1a1a1a;
+            border-right: 1px solid #334155;
         }
 
-        .editor-button:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .editor-button:active {
-            transform: scale(0.9);
-        }
-
-        .editor-button i {
-            font-size: 0.9rem;
-        }
-
-        .download-dropdown {
-            position: relative;
+        .dark-theme .CodeMirror-linenumber {
+            color: #64748b;
         }
 
         .download-options {
-            display: none;
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: white;
+            background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            padding: 5px 0;
+            padding: 0.5rem;
+            z-index: 100;
+            display: none;
+        }
+
+        .download-options.show {
+            display: block;
+        }
+
+        .dark-theme .download-options {
+            background: #334155;
+            color: #f1f5f9;
         }
 
         .download-options button {
-            display: block;
             width: 100%;
-            padding: 5px 10px;
+            padding: 0.5rem 1rem;
             text-align: left;
-            background: none;
             border: none;
+            background: none;
             cursor: pointer;
+            color: inherit;
+            font-size: 0.875rem;
         }
 
         .download-options button:hover {
-            background-color: #f1f1f1;
+            background: #f1f5f9;
         }
 
-        .show {
-            display: block;
+        .dark-theme .download-options button:hover {
+            background: #1e293b;
         }
 
         #copyMessage {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--success-color);
+            top: 2rem;
+            right: 2rem;
+            background: var(--success);
             color: white;
-            padding: 10px 20px;
+            padding: 1rem;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             opacity: 0;
-            transition: opacity var(--transition);
+            transform: translateY(-1rem);
+            transition: var(--transition);
+        }
+
+        #copyMessage.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         footer {
-            margin-top: 20px;
-            padding: 20px 0;
             text-align: center;
-            font-size: 0.9rem;
-            color: var(--secondary-color);
+            padding: 1rem;
+            color: var(--text-dark);
+            margin-top: 1rem;
+        }
+
+        .dark-theme footer {
+            color: var(--text-light);
         }
 
         footer a {
@@ -167,51 +226,130 @@
             text-decoration: none;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        /* Webkit browsers (Chrome, Safari) scrollbar styling */
+        .dark-theme .CodeMirror::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+            background-color: #1a1a1a;
+        }
+
+        .dark-theme .CodeMirror::-webkit-scrollbar-thumb {
+            background-color: #334155;
+            border-radius: 6px;
+            border: 3px solid #1a1a1a;
+        }
+
+        .dark-theme .CodeMirror::-webkit-scrollbar-track {
+            background-color: #1a1a1a;
+        }
+
+        .dark-theme .CodeMirror::-webkit-scrollbar-corner {
+            background-color: #1a1a1a;
+        }
+
+        /* Firefox scrollbar styling */
+        .dark-theme .CodeMirror {
+            scrollbar-color: #334155 #1a1a1a;
+            scrollbar-width: thin;
+        }
+
+        /* Light theme scrollbar */
+        .CodeMirror::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+            background-color: #f1f5f9;
+        }
+
+        .CodeMirror::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 6px;
+            border: 3px solid #f1f5f9;
+        }
+
+        .CodeMirror::-webkit-scrollbar-track {
+            background-color: #f1f5f9;
+        }
+
+        .CodeMirror::-webkit-scrollbar-corner {
+            background-color: #f1f5f9;
+        }
+
+        .CodeMirror {
+            scrollbar-color: #cbd5e1 #f1f5f9;
+            scrollbar-width: thin;
         }
 
         @media (max-width: 768px) {
-            .editor-buttons {
-                top: -35px;
+            .container {
+                padding: 0.5rem;
             }
 
-            .editor-button {
-                width: 25px;
-                height: 25px;
+            .toolbar {
+                flex-wrap: wrap;
             }
 
-            .editor-button i {
-                font-size: 0.8rem;
+            .btn {
+                padding: 0.5rem;
+            }
+
+            .btn span {
+                display: none;
+            }
+
+            .CodeMirror {
+                white-space: nowrap;
+                overflow-x: auto;
             }
         }
     </style>
 </head>
 
-<body class="light-theme">
+<body>
     <div class="container">
-        <h1 id="themeToggleHeading">Code Editor <i class="fas fa-code"></i></h1>
+        <div class="header">
+            <div class="logo" id="themeToggleHeading">
+				<span>Code Editor</span>
+                <i class="fas fa-code"></i>
+            </div>
+        </div>
+
         <div class="editor-container">
-            <div class="editor-buttons">
-                <button class="editor-button" id="pasteButton" onclick="pasteHTML()" title="Paste"><i class="fas fa-paste"></i></button>
-                <button class="editor-button" id="previewButton" onclick="previewHTML()" title="Preview" disabled><i class="fas fa-eye"></i></button>
-                <button class="editor-button" id="copyButton" onclick="copyHTML()" title="Copy" disabled><i class="fas fa-copy"></i></button>
-                <button class="editor-button" id="clearButton" onclick="clearHTML()" title="Clear" disabled><i class="fas fa-trash"></i></button>
-                <div class="download-dropdown">
-                    <button class="editor-button download-button" onclick="toggleDownloadOptions(event)" title="Download"><i class="fas fa-download"></i></button>
+            <div class="toolbar">
+                <button class="btn" id="pasteButton" onclick="pasteHTML()">
+                    <i class="fas fa-paste"></i>
+                    <span>Paste</span>
+                </button>
+                <button class="btn" id="previewButton" onclick="previewHTML()" disabled>
+                    <i class="fas fa-eye"></i>
+                    <span>Preview</span>
+                </button>
+                <button class="btn" id="copyButton" onclick="copyHTML()" disabled>
+                    <i class="fas fa-copy"></i>
+                    <span>Copy</span>
+                </button>
+                <button class="btn" id="clearButton" onclick="clearHTML()" disabled>
+                    <i class="fas fa-trash"></i>
+                    <span>Clear</span>
+                </button>
+                <div class="download-dropdown" style="position: relative;">
+                    <button class="btn download-button" onclick="toggleDownloadOptions()" id="downloadButton" disabled>
+                        <i class="fas fa-download"></i>
+                        <span>Download</span>
+                    </button>
                     <div id="downloadOptions" class="download-options">
-                        <button onclick="downloadCode('html')">Download HTML</button>
-                        <button onclick="downloadCode('txt')">Download TXT</button>
+                        <button onclick="downloadCode('html')">Download as HTML</button>
+                        <button onclick="downloadCode('txt')">Download as TXT</button>
                     </div>
                 </div>
             </div>
             <div id="codeEditor"></div>
         </div>
+
         <div id="copyMessage">Copied to clipboard!</div>
     </div>
 
     <footer>
-        Created with <i class="fas fa-heart" style="color: #dc3545;"></i> by <a href="#">Falendra Sahu</a>
+        Created with <i class="fas fa-heart" style="color: #ef4444;"></i> by <a href="https://github.com/falendra">Falendra Sahu</a>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
@@ -225,7 +363,7 @@
             lineNumbers: true,
             autoCloseBrackets: true,
             matchBrackets: true,
-            lineWrapping: true,
+            lineWrapping: false,
             viewportMargin: Infinity
         });
 
@@ -234,6 +372,7 @@
             document.getElementById('previewButton').disabled = !hasContent;
             document.getElementById('clearButton').disabled = !hasContent;
             document.getElementById('copyButton').disabled = !hasContent;
+            document.getElementById('downloadButton').disabled = !hasContent;
         }
 
         function previewHTML() {
@@ -261,9 +400,9 @@
 
         function showCopyMessage() {
             const copyMessage = document.getElementById('copyMessage');
-            copyMessage.style.opacity = 1;
+            copyMessage.classList.add('show');
             setTimeout(() => {
-                copyMessage.style.opacity = 0;
+                copyMessage.classList.remove('show');
             }, 2000);
         }
 
@@ -285,38 +424,29 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            hideDownloadOptions();
         }
 
         function toggleTheme() {
             const body = document.body;
-            const editorElement = document.querySelector('.CodeMirror');
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                editor.setOption('theme', 'dracula');
-            } else {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                editor.setOption('theme', 'default');
-            }
+            body.classList.toggle('dark-theme');
+            editor.setOption('theme', body.classList.contains('dark-theme') ? 'material-ocean' : 'default');
         }
 
-        function toggleDownloadOptions(event) {
-            event.stopPropagation();
-            document.getElementById("downloadOptions").classList.toggle("show");
+        function toggleDownloadOptions() {
+            const downloadOptions = document.getElementById('downloadOptions');
+            downloadOptions.classList.toggle('show');
         }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.download-button')) {
-                var dropdowns = document.getElementsByClassName("download-options");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
+        function hideDownloadOptions() {
+            document.getElementById('downloadOptions').classList.remove('show');
         }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.download-dropdown')) {
+                hideDownloadOptions();
+            }
+        });
 
         document.getElementById('themeToggleHeading').addEventListener('click', toggleTheme);
         editor.on('change', updateButtonStates);

@@ -1,27 +1,29 @@
-
-<html><head><base href="HTML">
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Editor</title>
-	<link rel="icon" type="image/png" href="https://img.icons8.com/?size=80&id=i1DTRHrbIVcm&format=png">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=80&id=i1DTRHrbIVcm&format=png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/material-ocean.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #6366f1;
             --secondary-color: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-light: #f8fafc;
+            --bg-dark: linear-gradient(145deg, #0f172a, #1e293b);
+            --bg-light: linear-gradient(145deg, #f8fafc, #e2e8f0);
             --text-dark: #1e293b;
             --text-light: #f1f5f9;
             --success: #22c55e;
-            --border-radius: 12px;
+            --neon-accent: #00ffcc;
+            --border-radius: 20px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.18);
         }
 
         * {
@@ -31,7 +33,7 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             min-height: 100vh;
             background: var(--bg-light);
@@ -59,6 +61,7 @@
             padding: 0.5rem 0;
         }
 
+        /* Light Theme */
         .logo {
             display: flex;
             align-items: center;
@@ -66,36 +69,51 @@
             cursor: pointer;
             font-size: 1.5rem;
             font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            color: black; /* Logo text color in light theme */
         }
 
         .logo i {
-            color: var(--primary-color);
+            color: #6366f1; /* Icon color in light theme (blue) */
+        }
+
+        /* Dark Theme */
+        .dark-theme .logo {
+            color: white; /* Logo text color in dark theme */
+        }
+
+        .dark-theme .logo i {
+            color: #6366f1; /* Icon color in dark theme (blue) */
         }
 
         .editor-container {
             position: relative;
             border-radius: var(--border-radius);
             overflow: hidden;
-            background: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
             box-shadow: var(--box-shadow);
             margin-top: 0.5rem;
         }
 
         .dark-theme .editor-container {
-            background: #1a1a1a;
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .toolbar {
             display: flex;
             gap: 0.5rem;
             padding: 0.75rem;
-            background: #f1f5f9;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .dark-theme .toolbar {
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn {
@@ -103,24 +121,34 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
-            background: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
             color: var(--text-dark);
         }
 
+        .btn.active {
+            background: var(--neon-accent);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+        }
+
         .dark-theme .btn {
-            background: #334155;
-            color: #f1f5f9;
+            background: rgba(51, 65, 85, 0.5);
+            color: var(--text-light);
         }
 
         .btn:hover {
-            background: var(--primary-color);
-            color: white;
+            background: var(--neon-accent);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
         }
 
         .btn:disabled {
@@ -137,32 +165,34 @@
             font-family: 'Fira Code', monospace;
             font-size: 14px;
             padding: 1rem;
+            background: transparent !important;
         }
 
         .dark-theme .CodeMirror {
-            background: #1a1a1a;
-            color: #f1f5f9;
+            color: var(--text-light);
         }
 
         .dark-theme .CodeMirror-gutters {
-            background: #1a1a1a;
-            border-right: 1px solid #334155;
+            background: transparent;
+            border-right: 1px solid var(--glass-border);
         }
 
         .dark-theme .CodeMirror-linenumber {
-            color: #64748b;
+            color: var(--text-light);
         }
 
         .download-options {
             position: absolute;
             top: 100%;
             right: 0;
-            background: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             padding: 0.5rem;
             z-index: 100;
             display: none;
+            border: 1px solid var(--glass-border);
         }
 
         .download-options.show {
@@ -170,8 +200,8 @@
         }
 
         .dark-theme .download-options {
-            background: #334155;
-            color: #f1f5f9;
+            background: rgba(51, 65, 85, 0.5);
+            color: var(--text-light);
         }
 
         .download-options button {
@@ -183,17 +213,15 @@
             cursor: pointer;
             color: inherit;
             font-size: 0.875rem;
+            transition: var(--transition);
         }
 
         .download-options button:hover {
-            background: #f1f5f9;
+            background: var(--neon-accent);
+            color: var(--bg-dark);
         }
 
-        .dark-theme .download-options button:hover {
-            background: #1e293b;
-        }
-
-        #copyMessage {
+        #toast {
             position: fixed;
             top: 2rem;
             right: 2rem;
@@ -205,11 +233,18 @@
             opacity: 0;
             transform: translateY(-1rem);
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        #copyMessage.show {
+        #toast.show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        #toast i {
+            font-size: 1.2rem;
         }
 
         footer {
@@ -217,6 +252,7 @@
             padding: 1rem;
             color: var(--text-dark);
             margin-top: 1rem;
+            font-family: 'Orbitron', sans-serif;
         }
 
         .dark-theme footer {
@@ -224,60 +260,27 @@
         }
 
         footer a {
-            color: var(--primary-color);
+            color: #6366f1;
             text-decoration: none;
         }
 
-        /* Webkit browsers (Chrome, Safari) scrollbar styling */
-        .dark-theme .CodeMirror::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-            background-color: #1a1a1a;
-        }
-
-        .dark-theme .CodeMirror::-webkit-scrollbar-thumb {
-            background-color: #334155;
-            border-radius: 6px;
-            border: 3px solid #1a1a1a;
-        }
-
-        .dark-theme .CodeMirror::-webkit-scrollbar-track {
-            background-color: #1a1a1a;
-        }
-
-        .dark-theme .CodeMirror::-webkit-scrollbar-corner {
-            background-color: #1a1a1a;
-        }
-
-        /* Firefox scrollbar styling */
-        .dark-theme .CodeMirror {
-            scrollbar-color: #334155 #1a1a1a;
-            scrollbar-width: thin;
-        }
-
-        /* Light theme scrollbar */
+        /* Scrollbar styling */
         .CodeMirror::-webkit-scrollbar {
             width: 12px;
             height: 12px;
-            background-color: #f1f5f9;
         }
 
         .CodeMirror::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
+            background-color: var(--neon-accent);
             border-radius: 6px;
-            border: 3px solid #f1f5f9;
         }
 
         .CodeMirror::-webkit-scrollbar-track {
-            background-color: #f1f5f9;
-        }
-
-        .CodeMirror::-webkit-scrollbar-corner {
-            background-color: #f1f5f9;
+            background-color: var(--glass-bg);
         }
 
         .CodeMirror {
-            scrollbar-color: #cbd5e1 #f1f5f9;
+            scrollbar-color: var(--neon-accent) var(--glass-bg);
             scrollbar-width: thin;
         }
 
@@ -310,7 +313,7 @@
     <div class="container">
         <div class="header">
             <div class="logo" id="themeToggleHeading">
-				<span>Code Editor</span>
+                <span>Code Editor</span>
                 <i class="fas fa-code"></i>
             </div>
         </div>
@@ -347,7 +350,10 @@
             <div id="codeEditor"></div>
         </div>
 
-        <div id="copyMessage">Copied to clipboard!</div>
+        <div id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span>Copied to clipboard!</span>
+        </div>
     </div>
 
     <footer>
@@ -375,6 +381,15 @@
             document.getElementById('clearButton').disabled = !hasContent;
             document.getElementById('copyButton').disabled = !hasContent;
             document.getElementById('downloadButton').disabled = !hasContent;
+
+            // Add active class to buttons when clicked
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
         }
 
         function previewHTML() {
@@ -394,17 +409,18 @@
         function copyHTML() {
             const htmlCode = editor.getValue();
             navigator.clipboard.writeText(htmlCode).then(() => {
-                showCopyMessage();
+                showToast('Copied to clipboard!', 'success');
             }).catch(err => {
-                alert('Failed to copy text: ' + err);
+                showToast('Failed to copy text!', 'error');
             });
         }
 
-        function showCopyMessage() {
-            const copyMessage = document.getElementById('copyMessage');
-            copyMessage.classList.add('show');
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+            toast.classList.add('show');
             setTimeout(() => {
-                copyMessage.classList.remove('show');
+                toast.classList.remove('show');
             }, 2000);
         }
 
@@ -413,7 +429,7 @@
                 editor.setValue(text);
                 updateButtonStates();
             }).catch(err => {
-                alert('Failed to read clipboard contents: ' + err);
+                showToast('Failed to read clipboard!', 'error');
             });
         }
 

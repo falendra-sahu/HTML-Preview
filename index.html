@@ -320,30 +320,30 @@
 
         <div class="editor-container">
             <div class="toolbar">
-                <button class="btn" id="pasteButton" onclick="pasteHTML()">
+                <button class="btn" id="pasteButton">
                     <i class="fas fa-paste"></i>
                     <span>Paste</span>
                 </button>
-                <button class="btn" id="previewButton" onclick="previewHTML()" disabled>
+                <button class="btn" id="previewButton" disabled>
                     <i class="fas fa-eye"></i>
                     <span>Preview</span>
                 </button>
-                <button class="btn" id="copyButton" onclick="copyHTML()" disabled>
+                <button class="btn" id="copyButton" disabled>
                     <i class="fas fa-copy"></i>
                     <span>Copy</span>
                 </button>
-                <button class="btn" id="clearButton" onclick="clearHTML()" disabled>
+                <button class="btn" id="clearButton" disabled>
                     <i class="fas fa-trash"></i>
                     <span>Clear</span>
                 </button>
                 <div class="download-dropdown" style="position: relative;">
-                    <button class="btn download-button" onclick="toggleDownloadOptions()" id="downloadButton" disabled>
+                    <button class="btn download-button" id="downloadButton" disabled>
                         <i class="fas fa-download"></i>
                         <span>Download</span>
                     </button>
                     <div id="downloadOptions" class="download-options">
-                        <button onclick="downloadCode('html')">Download as HTML</button>
-                        <button onclick="downloadCode('txt')">Download as TXT</button>
+                        <button>Download as HTML</button>
+                        <button>Download as TXT</button>
                     </div>
                 </div>
             </div>
@@ -381,15 +381,6 @@
             document.getElementById('clearButton').disabled = !hasContent;
             document.getElementById('copyButton').disabled = !hasContent;
             document.getElementById('downloadButton').disabled = !hasContent;
-
-            // Add active class to buttons when clicked
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    buttons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                });
-            });
         }
 
         function previewHTML() {
@@ -467,6 +458,14 @@
         });
 
         document.getElementById('themeToggleHeading').addEventListener('click', toggleTheme);
+        document.getElementById('pasteButton').addEventListener('click', pasteHTML);
+        document.getElementById('previewButton').addEventListener('click', previewHTML);
+        document.getElementById('copyButton').addEventListener('click', copyHTML);
+        document.getElementById('clearButton').addEventListener('click', clearHTML);
+        document.getElementById('downloadButton').addEventListener('click', toggleDownloadOptions);
+        document.querySelector('#downloadOptions button:nth-child(1)').addEventListener('click', () => downloadCode('html'));
+        document.querySelector('#downloadOptions button:nth-child(2)').addEventListener('click', () => downloadCode('txt'));
+
         editor.on('change', updateButtonStates);
         updateButtonStates();
     </script>
